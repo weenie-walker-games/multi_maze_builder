@@ -9,7 +9,7 @@ namespace WeenieWalker
 
         [SerializeField] GameObject selectedOption;
         Renderer selectedOptionRend;
-        [SerializeField] List<GameObject> options = new List<GameObject>();
+        [SerializeField] List<Renderer> options = new List<Renderer>();
         List<Material> optionMats = new List<Material>();
 
         List<CellConnector> connections = new List<CellConnector>();
@@ -17,11 +17,13 @@ namespace WeenieWalker
         private void OnEnable()
         {
             MazeBuilderManager.OnSelectOption += SelectOption;
+            MazeBuilderManager.OnColorChange += SetOptionColor;
         }
 
         private void OnDisable()
         {
             MazeBuilderManager.OnSelectOption -= SelectOption;
+            MazeBuilderManager.OnColorChange -= SetOptionColor;
         }
 
         private void Start()
@@ -30,16 +32,16 @@ namespace WeenieWalker
 
             for (int i = 0; i < options.Count; i++)
             {
-                optionMats.Add(options[i].GetComponent<Renderer>().material);
+                optionMats.Add(options[i].material);
             }
 
-            SetOptionsActive(false, false);
+            SetOptionsActive(false, true);
         }
 
         private void SetOptionsActive(bool isSelectedActive, bool isOptionsActive)
         {
             selectedOption.SetActive(isSelectedActive);
-            options.ForEach(g => g.SetActive(isOptionsActive));
+            options.ForEach(g => g.gameObject.SetActive(isOptionsActive));
         }
 
         private void SelectOption(int selection)
@@ -47,6 +49,11 @@ namespace WeenieWalker
             selectedOptionRend.material = optionMats[selection];
             SetOptionsActive(true, false);
 
+        }
+
+        private void SetOptionColor(int option, Color newColor)
+        {
+            options[option].material.color = newColor;
         }
     }
 

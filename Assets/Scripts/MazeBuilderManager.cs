@@ -18,8 +18,12 @@ namespace WeenieWalker
 
         [Range(1, 30)]
         [SerializeField] int gridHeight = 5;
+        public int GridHeight { get { return gridHeight; } set { gridHeight = value; } }
         [Range(1, 30)]
         [SerializeField] int gridWidth = 5;
+        public int GridWidth { get { return gridWidth; } set { gridWidth = value; } }
+
+        [SerializeField] List<Color> optionColors = new List<Color>();
 
         private void OnEnable()
         {
@@ -35,6 +39,11 @@ namespace WeenieWalker
         {
             //This is hard coded in based on the Range attribute above
             OnCameraGridMaximums?.Invoke(30, 30);
+
+            for (int i = 0; i < optionColors.Count; i++)
+            {
+                OnColorChange?.Invoke(i, optionColors[i]);
+            }
         }
 
         public void SetHeight(int height)
@@ -69,6 +78,11 @@ namespace WeenieWalker
 
             OnCameraGridMaximums?.Invoke(30, 30);
             OnCameraToMove?.Invoke(gridHeight, gridWidth);
+
+            for (int i = 0; i < optionColors.Count; i++)
+            {
+                OnColorChange?.Invoke(i, optionColors[i]);
+            }
         }
 
         public void ClearGrid()

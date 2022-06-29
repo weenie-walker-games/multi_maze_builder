@@ -1,14 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace WeenieWalker
 {
-    public class CellBlock : MonoBehaviour
+    public class CellBlock : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
 
         [SerializeField] GameObject selectedOption;
         Renderer selectedOptionRend;
+        [SerializeField] float selectedAlphaValue = 0.25f;
         [SerializeField] List<Renderer> options = new List<Renderer>();
         List<Material> optionMats = new List<Material>();
 
@@ -46,14 +48,39 @@ namespace WeenieWalker
 
         private void SelectOption(int selection)
         {
-            selectedOptionRend.material = optionMats[selection];
-            SetOptionsActive(true, false);
-
+            if (selection == -1)
+            {
+                SetOptionsActive(false, true);
+            }
+            else
+            {
+                selectedOptionRend.material = optionMats[selection];
+                SetOptionsActive(true, false);
+            }
         }
 
         private void SetOptionColor(int option, Color newColor)
         {
             options[option].material.color = newColor;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            MazeBuilderManager.Instance.SelectedCell(this);
+            Color newColor = Color.white;
+            newColor = selectedOptionRend.material.color;
+            newColor.a = selectedAlphaValue;
+            selectedOptionRend.material.color = newColor;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            //throw new System.NotImplementedException();
         }
     }
 

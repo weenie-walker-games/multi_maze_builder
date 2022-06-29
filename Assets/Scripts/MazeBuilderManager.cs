@@ -25,6 +25,9 @@ namespace WeenieWalker
 
         [SerializeField] List<Color> optionColors = new List<Color>();
 
+        int currentSelectedOption = -1;
+        CellBlock currentCellClicked = null;
+
         private void OnEnable()
         {
             
@@ -92,7 +95,29 @@ namespace WeenieWalker
 
         public void SelectOption(int selection)
         {
-            OnSelectOption?.Invoke(selection);
+            currentSelectedOption = selection == currentSelectedOption? -1 : selection;
+         
+            OnSelectOption?.Invoke(currentSelectedOption);
+            ClearClickedCell();
+        }
+
+        public void SelectedCell(CellBlock clickedCell)
+        {
+            if (currentCellClicked == null)
+            {
+                currentCellClicked = clickedCell;
+            }
+            else
+            {
+                //Need to decide how to address what to do after a click
+            }
+        }
+
+        public void ClearClickedCell()
+        {
+            if (currentCellClicked != null)
+                currentCellClicked = null;
+
         }
     }
 }

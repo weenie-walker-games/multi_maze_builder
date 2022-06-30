@@ -8,13 +8,10 @@ namespace WeenieWalker
     public class CellBlock : MonoBehaviour, IPointerClickHandler
     {
 
-        [SerializeField] GameObject selectedOption;
-        Renderer selectedOptionRend;
-        Material defaultSelectedOptionMat;
-        [SerializeField] float selectedAlphaValue = 0.25f;
+        [SerializeField] Renderer selectedOptionRend;
+        Color defaultSelectedOptionColor;
         [SerializeField] List<Renderer> options = new List<Renderer>();
-        List<Material> optionMats = new List<Material>();
-        int currentlySelectedOption;
+        int currentlySelectedOption = -1;
 
         [SerializeField] List<CellData> cellData = new List<CellData>();
 
@@ -32,25 +29,19 @@ namespace WeenieWalker
 
         private void Start()
         {
-            selectedOptionRend = selectedOption.GetComponent<Renderer>();
-            defaultSelectedOptionMat = selectedOptionRend.material;
-
-            for (int i = 0; i < options.Count; i++)
-            {
-                optionMats.Add(options[i].material);
-            }
-
+            defaultSelectedOptionColor = selectedOptionRend.material.color;
             SetOptionsActive(false, true);
         }
 
         private void SetOptionsActive(bool isSelectedActive, bool isOptionsActive)
         {
-            selectedOption.SetActive(isSelectedActive);
+            selectedOptionRend.gameObject.SetActive(isSelectedActive);
             for (int i = 0; i < options.Count; i++)
             {
                 bool toActivate = isOptionsActive && cellData[i].isActive;
                 options[i].gameObject.SetActive(toActivate);
             }
+
         }
 
         private void SelectOption(int selection)
@@ -65,11 +56,11 @@ namespace WeenieWalker
             {
                 if (cellData[selection].isActive)
                 {
-                    selectedOptionRend.material = optionMats[selection];
+                    selectedOptionRend.material.color = cellData[selection].cellColor;
                 }
                 else
                 {
-                    selectedOptionRend.material = defaultSelectedOptionMat;
+                    selectedOptionRend.material.color = defaultSelectedOptionColor;
                 }
 
                 SetOptionsActive(true, false);
@@ -84,18 +75,21 @@ namespace WeenieWalker
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            //Don't do anything if an option isn't active
+            if (currentlySelectedOption == -1)
+                return;
             
             //On left-click, set the cell active for this option
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 MazeBuilderManager.Instance.SelectedCell(this);
-                selectedOptionRend.material = optionMats[currentlySelectedOption];
+                selectedOptionRend.material.color = cellData[currentlySelectedOption].cellColor;
                 cellData[currentlySelectedOption].isActive = true;
             }
             //On right click, set the cell inactive for this option
             else if(eventData.button == PointerEventData.InputButton.Right)
             {
-                selectedOptionRend.material = defaultSelectedOptionMat;
+                selectedOptionRend.material.color = defaultSelectedOptionColor;
                 cellData[currentlySelectedOption].isActive = false;
             }
 

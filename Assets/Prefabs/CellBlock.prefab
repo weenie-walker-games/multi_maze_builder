@@ -875,8 +875,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1f9544945af1c6418e4208d0d6899dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedOption: {fileID: 150138721185481148}
-  selectedAlphaValue: 0.25
+  selectedOptionRend: {fileID: 81125146362182480}
   options:
   - {fileID: 3209577883139917091}
   - {fileID: 8182893186657896412}
@@ -886,15 +885,19 @@ MonoBehaviour:
   - optionRenderer: {fileID: 3209577883139917091}
     isActive: 0
     cellColor: {r: 0, g: 0, b: 0, a: 0}
+    optionMaterial: {fileID: 0}
   - optionRenderer: {fileID: 8182893186657896412}
     isActive: 0
     cellColor: {r: 0, g: 0, b: 0, a: 0}
+    optionMaterial: {fileID: 0}
   - optionRenderer: {fileID: 6251876257042442545}
     isActive: 0
     cellColor: {r: 0, g: 0, b: 0, a: 0}
+    optionMaterial: {fileID: 0}
   - optionRenderer: {fileID: 8216239855913438540}
     isActive: 0
     cellColor: {r: 0, g: 0, b: 0, a: 0}
+    optionMaterial: {fileID: 0}
 --- !u!65 &7227971753280440392
 BoxCollider:
   m_ObjectHideFlags: 0

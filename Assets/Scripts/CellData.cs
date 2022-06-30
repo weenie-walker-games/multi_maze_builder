@@ -10,5 +10,6 @@ namespace WeenieWalker
         public Renderer optionRenderer;
         public bool isActive;
         public Color cellColor;
+        public Material optionMaterial;
     }
 }

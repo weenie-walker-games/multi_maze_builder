@@ -5,16 +5,18 @@ using UnityEngine.EventSystems;
 
 namespace WeenieWalker
 {
-    public class CellBlock : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class CellBlock : MonoBehaviour, IPointerClickHandler
     {
 
         [SerializeField] GameObject selectedOption;
         Renderer selectedOptionRend;
+        Material defaultSelectedOptionMat;
         [SerializeField] float selectedAlphaValue = 0.25f;
         [SerializeField] List<Renderer> options = new List<Renderer>();
         List<Material> optionMats = new List<Material>();
+        int currentlySelectedOption;
 
-        List<CellConnector> connections = new List<CellConnector>();
+        [SerializeField] List<CellData> cellData = new List<CellData>();
 
         private void OnEnable()
         {
@@ -31,6 +33,7 @@ namespace WeenieWalker
         private void Start()
         {
             selectedOptionRend = selectedOption.GetComponent<Renderer>();
+            defaultSelectedOptionMat = selectedOptionRend.material;
 
             for (int i = 0; i < options.Count; i++)
             {
@@ -43,18 +46,32 @@ namespace WeenieWalker
         private void SetOptionsActive(bool isSelectedActive, bool isOptionsActive)
         {
             selectedOption.SetActive(isSelectedActive);
-            options.ForEach(g => g.gameObject.SetActive(isOptionsActive));
+            for (int i = 0; i < options.Count; i++)
+            {
+                bool toActivate = isOptionsActive && cellData[i].isActive;
+                options[i].gameObject.SetActive(toActivate);
+            }
         }
 
         private void SelectOption(int selection)
         {
+            currentlySelectedOption = selection;
+
             if (selection == -1)
             {
                 SetOptionsActive(false, true);
             }
             else
             {
-                selectedOptionRend.material = optionMats[selection];
+                if (cellData[selection].isActive)
+                {
+                    selectedOptionRend.material = optionMats[selection];
+                }
+                else
+                {
+                    selectedOptionRend.material = defaultSelectedOptionMat;
+                }
+
                 SetOptionsActive(true, false);
             }
         }
@@ -62,40 +79,28 @@ namespace WeenieWalker
         private void SetOptionColor(int option, Color newColor)
         {
             options[option].material.color = newColor;
+            cellData[option].cellColor = newColor;
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            MazeBuilderManager.Instance.SelectedCell(this);
-            Color newColor = Color.white;
-            newColor = selectedOptionRend.material.color;
-            newColor.a = selectedAlphaValue;
-            selectedOptionRend.material.color = newColor;
+            
+            //On left-click, set the cell active for this option
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                MazeBuilderManager.Instance.SelectedCell(this);
+                selectedOptionRend.material = optionMats[currentlySelectedOption];
+                cellData[currentlySelectedOption].isActive = true;
+            }
+            //On right click, set the cell inactive for this option
+            else if(eventData.button == PointerEventData.InputButton.Right)
+            {
+                selectedOptionRend.material = defaultSelectedOptionMat;
+                cellData[currentlySelectedOption].isActive = false;
+            }
+
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            //throw new System.NotImplementedException();
-        }
 
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            //throw new System.NotImplementedException();
-        }
-    }
-
-    [System.Serializable]
-    public struct CellConnector
-    {
-        public int optionNumber;
-        public Vector3 startPointConnection;
-        public Vector3 endPointConnection;
-
-        public CellConnector(int option, Vector3 startPoint, Vector3 endPoint)
-        {
-            optionNumber = option;
-            startPointConnection = startPoint;
-            endPointConnection = endPoint;
-        }
     }
 }

@@ -2988,8 +2988,8 @@ MonoBehaviour:
   cellBlockPrefab: {fileID: 8846333259067166611, guid: 1626dab1cc117784ab6baf7d00c44fa3,
     type: 3}
   cellParent: {fileID: 1208604717}
-  gridHeight: 7
-  gridWidth: 13
+  gridHeight: 1
+  gridWidth: 2
   optionColors:
   - {r: 0.09411766, g: 0.14117648, b: 1, a: 1}
   - {r: 1, g: 0.10588236, b: 0.121568635, a: 1}

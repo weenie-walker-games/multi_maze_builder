@@ -5,11 +5,17 @@ using UnityEngine;
 namespace WeenieWalker
 {
     [System.Serializable]
-    public class CellData
+    public class CellOptionData
     {
         public Renderer optionRenderer;
         public bool isActive;
         public Color cellColor;
-        public Material optionMaterial;
+
+        public CellOptionData(Renderer renderer, bool active, Color color)
+        {
+            optionRenderer = renderer;
+            isActive = active;
+            cellColor = color;
+        }
     }
 }

@@ -8,17 +8,26 @@ namespace WeenieWalker
     public class CellBlock : MonoBehaviour, IPointerClickHandler
     {
 
+        [HideInInspector] public CellData cellData;
         [SerializeField] Renderer selectedOptionRend;
         Color defaultSelectedOptionColor;
         [SerializeField] List<Renderer> options = new List<Renderer>();
         int currentlySelectedOption = -1;
+        public Vector2 CellLocation { get; set; }
 
-        [SerializeField] List<CellData> cellData = new List<CellData>();
+        public List<CellOptionData> cellOptionData = new List<CellOptionData>();
 
         private void OnEnable()
         {
             MazeBuilderManager.OnSelectOption += SelectOption;
             MazeBuilderManager.OnColorChange += SetOptionColor;
+
+            cellOptionData.Clear();
+
+            for (int i = 0; i < options.Count; i++)
+            {
+                cellOptionData.Add(new CellOptionData(options[i], false, Color.black));
+            }
         }
 
         private void OnDisable()
@@ -38,7 +47,7 @@ namespace WeenieWalker
             selectedOptionRend.gameObject.SetActive(isSelectedActive);
             for (int i = 0; i < options.Count; i++)
             {
-                bool toActivate = isOptionsActive && cellData[i].isActive;
+                bool toActivate = isOptionsActive && cellOptionData[i].isActive;
                 options[i].gameObject.SetActive(toActivate);
             }
 
@@ -54,9 +63,9 @@ namespace WeenieWalker
             }
             else
             {
-                if (cellData[selection].isActive)
+                if (cellOptionData[selection].isActive)
                 {
-                    selectedOptionRend.material.color = cellData[selection].cellColor;
+                    selectedOptionRend.material.color = cellOptionData[selection].cellColor;
                 }
                 else
                 {
@@ -70,7 +79,7 @@ namespace WeenieWalker
         private void SetOptionColor(int option, Color newColor)
         {
             options[option].material.color = newColor;
-            cellData[option].cellColor = newColor;
+            cellOptionData[option].cellColor = newColor;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -83,14 +92,14 @@ namespace WeenieWalker
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 MazeBuilderManager.Instance.SelectedCell(this);
-                selectedOptionRend.material.color = cellData[currentlySelectedOption].cellColor;
-                cellData[currentlySelectedOption].isActive = true;
+                selectedOptionRend.material.color = cellOptionData[currentlySelectedOption].cellColor;
+                cellOptionData[currentlySelectedOption].isActive = true;
             }
             //On right click, set the cell inactive for this option
             else if(eventData.button == PointerEventData.InputButton.Right)
             {
                 selectedOptionRend.material.color = defaultSelectedOptionColor;
-                cellData[currentlySelectedOption].isActive = false;
+                cellOptionData[currentlySelectedOption].isActive = false;
             }
 
         }
